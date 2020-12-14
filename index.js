@@ -10,11 +10,12 @@ const session = require('express-session');
 
 const { mongoDBUrl } = require('./config/database');
 
-const authRoutes = require('./api/routes/authRoutes');
+const authRoutes = require('./api/routes/auth');
+const contributionRoutes = require('./api/routes/contributions');
 
 const app = express();
 
-mongoose.connect(mongoDBUrl, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongoDBUrl, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
   .then((db) => {
     console.log('DB connected');
   }).catch((error) => {
@@ -38,6 +39,7 @@ app.get("/", (req, res, next) => {
 });
 
 app.use('/auth', authRoutes);
+app.use('/contributions', contributionRoutes);
 
 app.use((req, res) => {
   res.status(404).send({url: req.originalUrl + ' not found'})

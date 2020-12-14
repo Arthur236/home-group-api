@@ -2,9 +2,9 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const { isEmpty } = require('lodash');
 
-const User = require('../models/userModel');
-const { userIsAdmin } = require('../../utils/authenticate');
-const generateToken = require('../../utils/generateToken');
+const User = require('../../models/User');
+const { userIsAdmin } = require('../../../utils/authenticate');
+const generateToken = require('../../../utils/generateToken');
 
 const router = express.Router();
 
@@ -20,7 +20,7 @@ router.post('/login', (req, res) => {
   }
 
   if (!isEmpty(errors)) {
-
+    return res.status(400).json(errors);
   } else {
     User.find({ email: req.body.email }).then(async (users) => {
       if (users.length > 0) {

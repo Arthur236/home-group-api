@@ -12,9 +12,11 @@ const UserSchema = new Schema({
   },
   firstName: {
     type: String,
+    required: true,
   },
   lastName: {
     type: String,
+    required: true,
   },
   email: {
     type: String,
@@ -30,7 +32,7 @@ const UserSchema = new Schema({
     type: String,
     default: '',
   },
-  is_admin: {
+  isAdmin: {
     type: Boolean,
     default: false,
   },
@@ -41,6 +43,10 @@ const UserSchema = new Schema({
   slug: {
     type: String,
   },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  }
 });
 
 UserSchema.plugin(URLSlugs('username', { field: 'slug'}));
