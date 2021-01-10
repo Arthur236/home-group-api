@@ -72,7 +72,6 @@ router.post('/register', userIsAdmin, (req, res) => {
       bcrypt.hash(req.body.password, salt, (err, hash) => {
 
         const newUser = new User({
-          username: req.body.username,
           firstName: req.body.firstName,
           lastName: req.body.lastName,
           email: req.body.email,

@@ -4,12 +4,6 @@ const URLSlugs = require('mongoose-url-slugs');
 const { Schema } = mongoose;
 
 const UserSchema = new Schema({
-  username: {
-    type: String,
-    unique: true,
-    required: true,
-    minlength: 3,
-  },
   firstName: {
     type: String,
     required: true,
@@ -49,5 +43,5 @@ const UserSchema = new Schema({
   }
 });
 
-UserSchema.plugin(URLSlugs('username', { field: 'slug'}));
+UserSchema.plugin(URLSlugs('firstName', { field: 'slug'}));
 module.exports = mongoose.model('User', UserSchema);
