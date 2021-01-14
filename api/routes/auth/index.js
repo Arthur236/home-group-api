@@ -29,7 +29,7 @@ router.post('/login', (req, res) => {
         const isPasswordValid = await bcrypt.compareSync(req.body.password, user.password);
 
         if (isPasswordValid) {
-          const token = await generateToken(user._id, user.username);
+          const token = await generateToken(user._id, user.firstName, user.email, user.isAdmin);
 
           return res.status(200).json({ token });
         } else {
@@ -45,12 +45,20 @@ router.post('/login', (req, res) => {
 router.post('/register', userIsAdmin, (req, res) => {
   const errors = {};
 
-  if (!req.body.username) {
-    errors.username = 'Username is required';
+  if (!req.body.firstName) {
+    errors.firstName = 'First Name is required';
   }
 
-  if (req.body.username.trim().length < 3) {
-    errors.username = 'Username should be at least 3 letters long';
+  if (req.body.firstName.trim().length < 3) {
+    errors.firstName = 'First Name should be at least 3 letters long';
+  }
+
+  if (!req.body.lastName) {
+    errors.lastName = 'Last Name is required';
+  }
+
+  if (req.body.lastName.trim().length < 3) {
+    errors.lastName = 'Last Name should be at least 3 letters long';
   }
 
   if (!req.body.email) {
@@ -78,13 +86,13 @@ router.post('/register', userIsAdmin, (req, res) => {
           password: hash,
         });
 
-        User.find({ username: req.body.username }).then((users) => {
+        User.find({ email: req.body.email }).then((users) => {
           if (users.length < 1) {
             User.find({ email: req.body.email }).then((users) => {
               if (users.length < 1) {
                 newUser.save().then((savedUser) => {
-                  console.log(`${savedUser.username} was registered successfully`);
-                  return req.status(201).json(`${savedUser.username} was registered successfully`);
+                  console.log(`${savedUser.firstName} was registered successfully`);
+                  return res.status(201).json(`${savedUser.firstName} was registered successfully`);
                 });
               } else {
                 errors.email = `A user with email '${req.body.email}' already exists`;
@@ -92,7 +100,7 @@ router.post('/register', userIsAdmin, (req, res) => {
               }
             });
           } else {
-            errors.username = `A user with username '${req.body.username}' already exists`;
+            errors.email = `A user with email '${req.body.email}' already exists`;
             return res.status(400).json(errors);
           }
         });
