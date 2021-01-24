@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const URLSlugs = require('mongoose-url-slugs');
+const mongooseSlugPlugin = require('mongoose-slug-plugin');
 
 const { Schema } = mongoose;
 
@@ -34,14 +34,15 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now(),
   },
-  slug: {
-    type: String,
-  },
   isDeleted: {
     type: Boolean,
     default: false,
-  }
+  },
+  resetToken: {
+    type: String,
+    default: '',
+  },
 });
 
-UserSchema.plugin(URLSlugs('firstName', { field: 'slug'}));
+UserSchema.plugin(mongooseSlugPlugin, { tmpl: '<%=firstName%>' });
 module.exports = mongoose.model('User', UserSchema);

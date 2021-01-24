@@ -45,7 +45,7 @@ const corsOptions = {
     }
   }
 }
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.get("/", (req, res, next) => {
   res.json("Hey");
@@ -61,5 +61,5 @@ app.use((req, res) => {
 const port = process.env.PORT || 4000;
 
 app.listen(port, () => {
-  console.log('\x1b[35m%s\x1b[0m', `\nThe server is running on http::/localhost:${port}`);
+  console.log('\x1b[35m%s\x1b[0m', `\nThe server is running on http:://localhost:${port}`);
 });
