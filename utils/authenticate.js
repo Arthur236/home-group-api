@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+const colors = require('colors');
 
-const { tokenSecret } = require('../config/variables');
+const { authTokenSecret } = require('../config/variables');
 
 module.exports = {
   userIsAuthenticated: (req, res, next) => {
@@ -8,19 +9,18 @@ module.exports = {
     const token = authHeader && authHeader.split(' ')[1];
 
     if (token === null) {
-      return res.status(401).send({ error: 'Unauthorized' });
+      return res.status(401).send({ msg: 'Unauthorized' });
     }
 
-    jwt.verify(token, tokenSecret, (err, user) => {
-      console.log(err);
-
-      if (err) {
-        return res.status(403).send({ error: 'Forbidden' });
-      }
+    try {
+      const user = jwt.verify(token, authTokenSecret);
 
       req.user = user;
       next();
-    });
+    } catch (error) {
+      console.log(colors.red(error.message));
+      return res.status(400).json({ msg: error.message });
+    }
   },
 
   userIsAdmin: (req, res, next) => {
@@ -28,22 +28,21 @@ module.exports = {
     const token = authHeader && authHeader.split(' ')[1];
 
     if (token === null) {
-      return res.status(401).send({ error: 'Unauthorized' });
+      return res.status(401).send({ msg: 'Unauthorized' });
     }
 
-    jwt.verify(token, tokenSecret, (err, user) => {
-      console.log(err);
+    try {
+      const user = jwt.verify(token, authTokenSecret);
 
-      if (err) {
-        return res.status(403).send({ error: 'Forbidden' });
-      }
-
-      if (!req.user.isAdmin) {
-        return res.status(401).send({ error: 'Unauthorized' });
+      if (!user.isAdmin) {
+        return res.status(401).send({ msg: 'Unauthorized' });
       }
 
       req.user = user;
       next();
-    });
+    } catch (error) {
+      console.log(colors.red(error.message));
+      return res.status(400).json({ msg: error.message });
+    }
   },
 };

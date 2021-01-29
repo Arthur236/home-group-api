@@ -2,64 +2,66 @@ const express = require('express');
 const { isEmpty } = require('lodash');
 
 const Contribution = require('../../models/Contribution');
-const { userIsAuthenticated } = require('../../../utils/authenticate');
+const { userIsAuthenticated, userIsAdmin } = require('../../../utils/authenticate');
 
 const router = express.Router();
 
-router.get('/', userIsAuthenticated, (req, res) => {
+router.get('/', userIsAuthenticated, async (req, res) => {
   const limit = req.query.limit || 10;
   const page = req.query.page || 1;
 
-  Contribution.find()
-    .populate('user', ['_id', 'photo', 'username', 'firstName', 'lastName'])
-    .skip((limit * page) - limit)
-    .limit(limit)
-    .then((contributions) => {
-      Contribution.countDocuments().then((contributionCount) => {
-        res.status(200).send({
-          contributions,
-          currentPage: parseInt(page),
-          pages: Math.ceil(contributionCount / limit)
-        })
-      });
-    }).catch((error) => {
-    console.log('Could not fetch your posts\n', error);
+  try {
+    const contributions = await Contribution.find()
+      .populate('user', ['_id', 'photo', 'firstName', 'lastName'])
+      .skip((limit * page) - limit)
+      .limit(limit);
 
-    res.status(400).send({ error: 'Could not fetch contributions' });
-  });
+    const contributionCount = await Contribution.countDocuments();
+
+    return res.status(200).send({
+      contributions,
+      currentPage: parseInt(page),
+      pages: Math.ceil(contributionCount / limit)
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({ msg: 'Could not fetch contributions' });
+  }
 });
 
-router.post('/create', (req, res) => {
+router.post('/create', userIsAdmin, async (req, res) => {
+  const { amount, month, year, user } = req.body;
   const errors = {};
 
-  if (!req.body.amount) {
+  if (!amount) {
     errors.title = 'Amount is required';
   }
 
-  if (!req.body.month) {
+  if (!month) {
     errors.description = 'Month is required';
   }
 
-  if (!req.body.year) {
+  if (!year) {
     errors.description = 'Year is required';
   }
 
   if (!isEmpty(errors)) {
-    res.status(400).send({ errors });
+    return res.status(400).send({ errors });
   } else {
     const newContribution = new Contribution();
 
-    newContribution.user = req.body.user;
-    newContribution.amount = req.body.amount;
-    newContribution.month = req.body.month;
-    newContribution.year = req.body.year;
+    newContribution.user = user;
+    newContribution.amount = amount;
+    newContribution.month = month;
+    newContribution.year = year;
 
-    newContribution.save().then((savedPost) => {
-      res.status(201).send({ msg: 'The contribution was successfully saved' });
-    }).catch((error) => {
-      console.log('Could not create your post\n', error);
-      res.status(400).send({ errors: error.errors });
-    });
+    try {
+      await newContribution.save();
+      return res.status(201).send({ msg: 'The contribution was successfully saved' });
+    } catch (error) {
+      console.log(error);
+      return res.status(400).send({ msg: 'An error occurred' });
+    }
   }
 });
 

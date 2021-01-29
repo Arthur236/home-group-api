@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const mongooseSlugPlugin = require('mongoose-slug-plugin');
 
 const { Schema } = mongoose;
 
@@ -44,5 +43,4 @@ const UserSchema = new Schema({
   },
 });
 
-UserSchema.plugin(mongooseSlugPlugin, { tmpl: '<%=firstName%>' });
 module.exports = mongoose.model('User', UserSchema);

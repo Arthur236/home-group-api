@@ -8,11 +8,13 @@ const methodOverride = require('method-override');
 const upload = require('express-fileupload');
 const session = require('express-session');
 const cors = require('cors');
+const colors = require('colors');
 
 const { mongoDBUrl } = require('./config/database');
 
 const authRoutes = require('./api/routes/auth');
 const contributionRoutes = require('./api/routes/contributions');
+const userRoutes = require('./api/routes/user');
 
 const app = express();
 
@@ -30,7 +32,7 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 app.use(bodyParser.json({ limit: '10mb', extended: true }));
 app.use(methodOverride('_method'));
 app.use(session({
-  secret: 'youwillneverguess',
+  secret: 'a9cf6e25-8560-4ca8-a6eb-623046595cf5',
   resave: true,
   saveUninitialized: true,
 }));
@@ -53,6 +55,7 @@ app.get("/", (req, res, next) => {
 
 app.use('/auth', authRoutes);
 app.use('/contributions', contributionRoutes);
+app.use('/users', userRoutes);
 
 app.use((req, res) => {
   res.status(404).send({url: req.originalUrl + ' not found'})
@@ -61,5 +64,5 @@ app.use((req, res) => {
 const port = process.env.PORT || 4000;
 
 app.listen(port, () => {
-  console.log('\x1b[35m%s\x1b[0m', `\nThe server is running on http:://localhost:${port}`);
+  console.log(colors.magenta(`\nThe server is running on http:://localhost:${port}`));
 });
