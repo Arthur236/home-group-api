@@ -58,7 +58,7 @@ app.use('/contributions', contributionRoutes);
 app.use('/users', userRoutes);
 
 app.use((req, res) => {
-  res.status(404).send({url: req.originalUrl + ' not found'})
+  res.status(404).json({url: req.originalUrl + ' not found'})
 });
 
 const port = process.env.PORT || 4000;

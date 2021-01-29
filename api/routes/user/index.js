@@ -15,14 +15,27 @@ router.get('/', userIsAuthenticated, async (req, res) => {
       .limit(limit);
     const userCount = await User.countDocuments();
 
-    return res.status(200).send({
+    return res.status(200).json({
       users,
       currentPage: parseInt(page),
       pages: Math.ceil(userCount / limit)
     });
   } catch (error) {
     console.log(error);
-    res.status(400).send({ msg: 'An error occurred' });
+    res.status(400).json({ msg: 'An error occurred' });
+  }
+});
+
+router.get('/:id', userIsAuthenticated, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findOne({ _id: id }, '_id firstName lastName email photo dateJoined isDeleted').exec();
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.log(error.message);
+    res.status(404).json({ msg: 'User not found' });
   }
 });
 

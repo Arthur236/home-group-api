@@ -18,14 +18,14 @@ router.get('/', userIsAuthenticated, async (req, res) => {
 
     const contributionCount = await Contribution.countDocuments();
 
-    return res.status(200).send({
+    return res.status(200).json({
       contributions,
       currentPage: parseInt(page),
       pages: Math.ceil(contributionCount / limit)
     });
   } catch (error) {
     console.log(error);
-    res.status(400).send({ msg: 'Could not fetch contributions' });
+    res.status(400).json({ msg: 'Could not fetch contributions' });
   }
 });
 
@@ -46,7 +46,7 @@ router.post('/create', userIsAdmin, async (req, res) => {
   }
 
   if (!isEmpty(errors)) {
-    return res.status(400).send({ errors });
+    return res.status(400).json({ errors });
   } else {
     const newContribution = new Contribution();
 
@@ -57,10 +57,10 @@ router.post('/create', userIsAdmin, async (req, res) => {
 
     try {
       await newContribution.save();
-      return res.status(201).send({ msg: 'The contribution was successfully saved' });
+      return res.status(201).json({ msg: 'The contribution was successfully saved' });
     } catch (error) {
       console.log(error);
-      return res.status(400).send({ msg: 'An error occurred' });
+      return res.status(400).json({ msg: 'An error occurred' });
     }
   }
 });

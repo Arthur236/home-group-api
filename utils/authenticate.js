@@ -9,7 +9,7 @@ module.exports = {
     const token = authHeader && authHeader.split(' ')[1];
 
     if (token === null) {
-      return res.status(401).send({ msg: 'Unauthorized' });
+      return res.status(401).json({ msg: 'Unauthorized' });
     }
 
     try {
@@ -28,14 +28,14 @@ module.exports = {
     const token = authHeader && authHeader.split(' ')[1];
 
     if (token === null) {
-      return res.status(401).send({ msg: 'Unauthorized' });
+      return res.status(401).json({ msg: 'Unauthorized' });
     }
 
     try {
       const user = jwt.verify(token, authTokenSecret);
 
       if (!user.isAdmin) {
-        return res.status(401).send({ msg: 'Unauthorized' });
+        return res.status(401).json({ msg: 'Unauthorized' });
       }
 
       req.user = user;
