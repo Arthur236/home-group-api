@@ -2,6 +2,7 @@ const express = require('express');
 const { isEmpty } = require('lodash');
 
 const Contribution = require('../../models/Contribution');
+
 const { userIsAuthenticated, userIsAdmin } = require('../../../utils/authenticate');
 
 const router = express.Router();

@@ -9,6 +9,7 @@ const path = require("path");
 const colors = require('colors');
 
 const User = require('../../models/User');
+
 const { userIsAdmin } = require('../../../utils/authenticate');
 const generateToken = require('../../../utils/generateToken');
 const {
@@ -112,7 +113,7 @@ router.post('/register', userIsAdmin, async (req, res) => {
       if (!user) {
         const savedUser = await newUser.save();
 
-        console.log(`\n${savedUser.firstName} was registered successfully`.green);
+        console.log(colors.green(`\n${savedUser.firstName} was registered successfully`));
 
         return res.status(201).json({ msg: `${savedUser.firstName} was registered successfully` });
       } else {
