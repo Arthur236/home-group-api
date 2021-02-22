@@ -1,6 +1,7 @@
 const express = require('express');
 const colors = require('colors');
 const { isEmpty } = require('lodash');
+const fs = require('fs');
 
 const User = require('../../models/User');
 
@@ -73,7 +74,7 @@ router.put('/:id', userIsAuthenticated, async (req, res) => {
   }
 });
 
-router.put('/photo/id', userIsAuthenticated, async (req, res) => {
+router.put('/photo/:id', userIsAuthenticated, async (req, res) => {
   const { id } = req.params;
 
   // Check if user is owner
@@ -96,9 +97,19 @@ router.put('/photo/id', userIsAuthenticated, async (req, res) => {
     const file = req.files.photo;
     const filename = `${Date.now()} - ${file.name}`;
 
+    if (user.photo !== '') {
+      fs.unlink(uploadDir + user.photo, (err) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).json({ msg: 'An error occurred' });
+        }
+      });
+    }
+
     file.mv(uploadDir + filename, (error) => {
       if (error) {
         console.log(error);
+        return res.status(400).json({ msg: 'An error occurred' });
       }
     });
 
