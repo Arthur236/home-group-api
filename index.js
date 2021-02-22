@@ -14,6 +14,7 @@ const { mongoDBUrl } = require('./config/database');
 
 const authRoutes = require('./api/routes/auth');
 const contributionRoutes = require('./api/routes/contributions');
+const fineRoutes = require('./api/routes/fines');
 const userRoutes = require('./api/routes/user');
 
 const app = express();
@@ -55,6 +56,7 @@ app.get("/", (req, res, next) => {
 
 app.use('/auth', authRoutes);
 app.use('/contributions', contributionRoutes);
+app.use('/fines', fineRoutes);
 app.use('/users', userRoutes);
 
 app.use((req, res) => {

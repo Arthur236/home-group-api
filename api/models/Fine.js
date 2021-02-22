@@ -4,7 +4,7 @@ const months = require('../../constants/months');
 
 const { Schema } = mongoose;
 
-const ContributionSchema = new Schema({
+const FineSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -33,4 +33,4 @@ const ContributionSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('Contribution', ContributionSchema);
+module.exports = mongoose.model('Fine', FineSchema);

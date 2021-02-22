@@ -42,6 +42,10 @@ router.post('/login', async (req, res) => {
       const user = await User.findOne({ email });
 
       if (user) {
+        if (user.isDeleted) {
+          return res.status(403).json({ msg: 'User is not authorized' });
+        }
+
         const isPasswordValid = await bcrypt.compareSync(password, user.password);
 
         if (isPasswordValid) {
@@ -139,7 +143,7 @@ router.put('/forgot-password', async (req, res) => {
     return res.status(400).json(errors);
   } else {
     try {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email, isDeleted: false });
 
       if (!user) {
         return res.status(400).json({ msg: 'A user with that email does not exist' });
@@ -204,7 +208,7 @@ router.put('/reset-password', async (req, res) => {
         return res.status(401).json({ msg: 'Invalid or expired token' });
       }
 
-      const user = await User.findOne({ resetToken: token });
+      const user = await User.findOne({ resetToken: token, isDeleted: false });
 
       if (!user) {
         return res.status(400).json({ msg: 'Invalid token' });
