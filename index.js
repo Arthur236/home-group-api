@@ -16,6 +16,7 @@ const authRoutes = require('./api/routes/auth');
 const contributionRoutes = require('./api/routes/contributions');
 const fineRoutes = require('./api/routes/fines');
 const userRoutes = require('./api/routes/user');
+const uploadRoutes = require('./api/routes/upload');
 
 const app = express();
 
@@ -58,6 +59,7 @@ app.use('/auth', authRoutes);
 app.use('/contributions', contributionRoutes);
 app.use('/fines', fineRoutes);
 app.use('/users', userRoutes);
+app.use('/upload', uploadRoutes);
 
 app.use((req, res) => {
   res.status(404).json({url: req.originalUrl + ' not found'})
