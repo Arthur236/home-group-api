@@ -3,7 +3,6 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const upload = require('express-fileupload');
 const session = require('express-session');
@@ -29,10 +28,12 @@ mongoose.connect(mongoDBUrl, { useNewUrlParser: true, useUnifiedTopology: true, 
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(upload());
-app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
-app.use(bodyParser.json({ limit: '10mb', extended: true }));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(methodOverride('_method'));
+app.use(upload({
+  limits: { fileSize: 5 * 1024 * 1024 }
+}));
 app.use(session({
   secret: 'a9cf6e25-8560-4ca8-a6eb-623046595cf5',
   resave: true,

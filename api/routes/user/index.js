@@ -7,7 +7,7 @@ const { userIsAdmin, userIsAuthenticated } = require('../../../utils/authenticat
 
 const router = express.Router();
 
-const userFields = '_id firstName lastName email photo dateJoined isDeleted';
+const userFields = '_id firstName lastName email photoName photoUrl dateJoined isDeleted';
 
 router.get('/', userIsAuthenticated, async (req, res) => {
   const limit = req.query.limit || 10;

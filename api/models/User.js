@@ -21,7 +21,11 @@ const UserSchema = new Schema({
     required: true,
     minlength: 6,
   },
-  photo: {
+  photoName: {
+    type: String,
+    default: '',
+  },
+  photoUrl: {
     type: String,
     default: '',
   },
